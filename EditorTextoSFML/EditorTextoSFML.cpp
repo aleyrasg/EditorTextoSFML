@@ -19,7 +19,7 @@ int main() {
     window.setKeyRepeatEnabled(true);
     sf::Font arial;
     arial.loadFromFile("ARIAL.ttf");
-    TextBox textbox1(15, sf::Color::White, true, { 100,100 });
+    TextBox textbox1(15, sf::Color::Magenta, true, { 100,100 });
     textbox1.setFont(arial);
     while (window.isOpen()) {
         sf::Event event;

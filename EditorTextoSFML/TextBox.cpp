@@ -75,19 +75,50 @@ void TextBox::typedOn(sf::Event input) {
         int charTyped = input.text.unicode;
         if (charTyped < 128) {
             if (hasLimit) {
-                if (text.str().length() <= limit) {
-                    inputLogic(charTyped);
-                }
-                else if (text.str().length() > limit && charTyped == DELETE_KEY) {
-                    deleteLastChar();
+                if (text.str().length() < limit || charTyped == DELETE_KEY) {
+                    if (charTyped != DELETE_KEY && charTyped != ENTER_KEY && charTyped != ESCAPE_KEY) {
+                        inputLogic(charTyped);
+                    }
+                    else if (charTyped == DELETE_KEY) {
+                        if (text.str().length() > 0) {
+                            deleteLastChar();
+                        }
+                    }
+                    textbox.setString(text.str() + "_"); // Incluimos el cursor
                 }
             }
             else {
-                inputLogic(charTyped);
+                if (charTyped != DELETE_KEY && charTyped != ENTER_KEY && charTyped != ESCAPE_KEY) {
+                    inputLogic(charTyped);
+                }
+                else if (charTyped == DELETE_KEY) {
+                    if (text.str().length() > 0) {
+                        deleteLastChar();
+                    }
+                }
+                textbox.setString(text.str() + "_"); // Incluimos el cursor
             }
         }
     }
+
+    // Check if the text exceeds the window width - 10 pixels and a newline hasn't been added yet
+    sf::FloatRect textRect = textbox.getGlobalBounds();
+   
+        if (textRect.left + textRect.width >= 800 && !newlineAdded && !text.str().empty()) {
+            // Move the text to a new line
+            std::string currentText = text.str();
+            text.str("");
+            text << currentText << "\n";
+            textbox.setString(text.str());
+            newlineAdded = true; // Establecer la bandera
+        }
+
+    
 }
+
+
+
+
 
 void TextBox::inputLogic(int charTyped) {
     if (charTyped != DELETE_KEY && charTyped != ENTER_KEY && charTyped != ESCAPE_KEY) {

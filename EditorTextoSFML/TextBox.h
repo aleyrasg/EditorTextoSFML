@@ -26,6 +26,7 @@ private:
     int limit;
     bool hasLimit;
     bool isSelected;
+    bool newlineAdded = false;
 
     void inputLogic(int charTyped);
     void deleteLastChar();
