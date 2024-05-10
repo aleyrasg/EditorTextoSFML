@@ -84,7 +84,7 @@ void TextBox::typedOn(sf::Event input) {
                             deleteLastChar();
                         }
                     }
-                    textbox.setString(text.str() + "_"); // Incluimos el cursor
+                    textbox.setString(text.str() + "_"); 
                 }
             }
             else {
@@ -96,29 +96,39 @@ void TextBox::typedOn(sf::Event input) {
                         deleteLastChar();
                     }
                 }
-                textbox.setString(text.str() + "_"); // Incluimos el cursor
+                textbox.setString(text.str() + "_"); 
             }
         }
     }
 
-    // Check if the text exceeds the window width - 10 pixels and a newline hasn't been added yet
-    sf::FloatRect textRect = textbox.getGlobalBounds();
-   
-        if (textRect.left + textRect.width >= 800 && !newlineAdded && !text.str().empty()) {
-            // Move the text to a new line
-            std::string currentText = text.str();
-            text.str("");
-            text << currentText << "\n";
-            textbox.setString(text.str());
-            newlineAdded = true; // Establecer la bandera
+
+    std::istringstream textStream(text.str());
+    std::ostringstream newText;
+    std::string line;
+    while (std::getline(textStream, line, '\n')) {
+        sf::Text tempText;
+        tempText.setCharacterSize(textbox.getCharacterSize());
+        tempText.setString(line);
+
+        sf::FloatRect tempRect = tempText.getLocalBounds();
+        if (tempRect.width >= 800) { 
+            newText << line << "\n";
+            newlineAdded = true; 
         }
+        else 
+            newText << line << '\n';
+        
+
+        
+        if (newlineAdded) {
+            newText << "\n";
+            newlineAdded = false; 
+        }
+    }
 
     
+    textbox.setString(newText.str());
 }
-
-
-
-
 
 void TextBox::inputLogic(int charTyped) {
     if (charTyped != DELETE_KEY && charTyped != ENTER_KEY && charTyped != ESCAPE_KEY) {
